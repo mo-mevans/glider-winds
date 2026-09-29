@@ -1,0 +1,16 @@
+{
+    "terminal.integrated.shellIntegration.enabled": false,
+    "terminal.integrated.shellIntegration.decorationsEnabled": false,
+    "python.defaultInterpreterPath": "/home/users/matt.evans/Documents/obsrd/networkdesign/tmp/.pixi/envs/default/bin/python",
+    "python.languageServer": "Pylance",
+    "python.analysis.autoSearchPaths": true,
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}",
+        "${workspaceFolder}/.."
+    ],
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.indexing": true,
+    "python.analysis.diagnosticMode": "workspace",
+    "python.terminal.activateEnvironment": true,
+    "python-envs.defaultEnvManager": "ms-python.python:system"
+}

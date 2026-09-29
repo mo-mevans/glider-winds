@@ -1,0 +1,32 @@
+"""
+Bin a thermalling window by number of turns achieved.
+
+This is preferred because vertical speed varies substantially during a thermal
+circling event, while the number of turns provides a more stable measure of the
+circling phase.
+
+Parameters
+----------
+t_data : array-like
+    Time data in seconds for the selected thermal window.
+nz_data : array-like
+    Vertical height data in meters, normalized to start at zero.
+sbin : float
+    Bin size in meters. This parameter is currently not used directly in this
+    implementation.
+P : float
+    Estimated period of circling in seconds.
+Ptrim : float
+    Number of periods to trim from the start of the data in order to avoid
+    transient motion during entry into the thermal. This is important because
+    the early part of the circling may not represent the steady-state thermalling
+    behaviour.
+
+Returns
+-------
+bidx : list of tuple
+    A list of tuples containing the bin edge indices ``(start_idx, end_idx)``
+    for each bin in the selected thermal window.
+nbin : int
+    Number of bins created.
+"""
