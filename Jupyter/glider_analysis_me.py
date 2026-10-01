@@ -654,10 +654,10 @@ def bin2(t_data, nz_data, sbin, P, Ptrim):
     t_data_trim = t_data[trim_idx:] - t_data[trim_idx]   # trim the data down and normalize time to start at 0 for better numerical stability
     nz_data_trim = nz_data[trim_idx:]
 
-    nbin = int((t_data[-1]-t_data[0])/(nP*P)) # how many full bins can be made based on the number of periods in the thermal soaring data window. Each bin will contain np=2 full periods of circling.
-    print(f"nbins: {nbin}")
+    # nbin = int((t_data[-1]-t_data[0])/(nP*P)) 
     # should nbins be based on t_data_trim rather than t_data ? Yes.
-    # e.g. nbin = int((t_data_trim[-1]-t_data_trim[0]/(nP*P)))
+    nbin = int((t_data_trim[-1]-t_data_trim[0])/(nP*P)) # how many full bins can be made based on the number of periods in the thermal soaring data window. Each bin will contain np=2 full periods of circling.
+    print(f"nbins: {nbin}")
     bidx = []
 
     prevedege = trim_idx # the start index for the first bin will be the first index after the trim.
@@ -750,6 +750,10 @@ def omega_guess(t_data, x_data, y_data, plot=True):
     
     print(f"omega0: {omega0}")
     return omega0
+
+'''
+Plotting helper function to be used in omega_guess - optional.
+'''
 
 def plot_omega_guess_diagnostics(tn, x_res_lin, y_res_lin, bn, T, p_bn, omega0, u0, v0):
     # Optional plots for reviewing:
@@ -872,7 +876,7 @@ def cov_est(t, result):
     return out
 
 
-def nonlinmdl(fid, t_data, x_data, y_data, z_data, lat, lon, bidx, nbin, wins, ntherm, results, nax, globP):
+def nonlinmdl(fid, t_data, x_data, y_data, z_data, lat, lon, bidx, nbin, wins, ntherm, results, nax, globP, plot=True):
     '''
     Executes non-linear (circling model) fitting procedure for each bin of a given thermalling window.
     Parameters such as angular rate, turn radius, phase, linear drift, and initial positions are extracted: 
@@ -902,9 +906,10 @@ def nonlinmdl(fid, t_data, x_data, y_data, z_data, lat, lon, bidx, nbin, wins, n
     rtype: pandas.DataFrame
     '''
 
-    # define a figure in which the fits for each bin will be plotted on their own subplot
-    fig = plt.figure(figsize=(4*nax[0], 3*nax[1]))
-    fig2 = plt.figure(figsize=(4*nax[0], 3*nax[1]))
+    if plot:
+        # define a figure in which the fits for each bin will be plotted on their own subplot
+        fig = plt.figure(figsize=(4*nax[0], 3*nax[1]))
+        fig2 = plt.figure(figsize=(4*nax[0], 3*nax[1]))
 
     fidarr = fid                        # flight ID for the current thermalling window
     refts = np.empty(nbin)              # reference timestamp for each bin, calculated as the midpoint of the time range for that bin
@@ -1079,7 +1084,7 @@ def nonlinmdl(fid, t_data, x_data, y_data, z_data, lat, lon, bidx, nbin, wins, n
         yevalplt = y_model(teval, omegaest[i], Ryest[i], phiyest[i], vest[i], y0est[i]) + ybin.mean() # for plotting smooth function
 
         xeval = x_model(t_centred, omegaest[i], Rxest[i], phixest[i], uest[i], x0est[i]) + xbin.mean()
-        xres = xbin - xeval # residuals between x values and x (cosine) model data
+        xres = xbin - xeval # residuals between x values and x (cosine + linear drift) model data
         yeval = y_model(t_centred, omegaest[i], Ryest[i], phiyest[i], vest[i], y0est[i]) + ybin.mean()
         yres = ybin - yeval
 
@@ -1131,93 +1136,43 @@ def nonlinmdl(fid, t_data, x_data, y_data, z_data, lat, lon, bidx, nbin, wins, n
         print(f"wind speed: |U|={magU[i]:.3f} +- {stdmagU[i]:.3f} m/s, bearing: b={bUdeg[i]:.3f} +- {dbUdeg[i]:.3f} deg")
         print(f"height ascended through, dz={dz_bin:.1f} m")
 
-        # Plot the results for visual inspection. Each bin will have its own subplot in a larger figure, with the fit and residuals plotted below each other.
 
-        # Subplots on fig for x component fit for each bin
-        ax = fig.add_subplot(2*nax[1], nax[0], 2*i+1)   # double the columns in order to have space for residuals plot alongside each fit  
-        ax.plot(tbin, xbin, linestyle = '', marker = '.', markersize=4)
-        # adding tbin.mean() back onto teval to display curve against the original data
-        ax.plot(teval + tbin.mean(), xevalplt, linestyle = '-', color = 'k', alpha = 0.5, label = f"Bin {ntherm}-{i+1} x fit")
+        # Optional debug/inspection plotting
+        if plot:
+            # Plot the results for visual inspection.
+            # Each bin will have its own subplot in a larger figure, with the fit and residuals plotted below each other.
+            bin_coords = {"tbin": tbin, "xbin": xbin, "ybin": ybin,
+                "teval": teval, "xevalplt": xevalplt, "yevalplt": yevalplt,
+                "xres": xres, "yres": yres,
+            }
+            print(f"NAX: {nax}")
+            plot_nonlin_bin_fit(nax, fig, fig2, ntherm, i, bin_coords)
 
-        ax.set_xlabel("t, s")
-        ax.set_ylabel("x, m")
-        ax.legend()
-
-        # Subplots on fig for x component residuals for each bin
-        ax2 = fig.add_subplot(2*nax[1], nax[0], 2*i+2)   # double the columns in order to have space for residuals plot alongside each fit  
-        # remember, xres = xbin - xeval
-        # len(tbin) == len(t_centred) however, len(tbin) != len(teval)
-        ax2.plot(tbin, xres, linestyle = '', marker = '.', markersize=4, label = f"Bin {ntherm}-{i+1} x residuals")
-        ax2.set_xlabel("t, s")
-        ax2.set_ylabel("x residual, m")
-        ax2.legend()
-
-        # Subplots on fig2 for y component fit for each bin
-        ax3 = fig2.add_subplot(2*nax[1], nax[0], 2*i+1)   # double the rows in order to have space for residuals plot below each fit  
-        ax3.plot(tbin, ybin, linestyle = '', marker = '.', markersize=4)
-        ax3.plot(teval + tbin.mean(), yevalplt, linestyle = '-', color = 'k', alpha = 0.5, label = f"Bin {ntherm}-{i+1} y fit")
-
-        ax3.set_xlabel("t, s")
-        ax3.set_ylabel("y, m")
-        ax3.legend()
-
-        # Subplots on fig2 for y component residuals for each bin
-        ax4 = fig2.add_subplot(2*nax[1], nax[0], 2*i+2)   # double the rows in order to have space for residuals plot below each fit  
-        ax4.plot(tbin, yres, linestyle = '', marker = '.', markersize=4, label = f"Bin {ntherm}-{i+1} y residuals")
-        ax4.set_xlabel("t, s")
-        ax4.set_ylabel("y residual, m")
-        ax4.legend()
 
         i += 1
 # ------------ for loop iterating over bins ends here ---------------
 
-    # Clean up figures and add titles, then save them to the output directory
-    fig.suptitle(f"Non-linear fit of x for {fid}; thermal {ntherm}")
-    fig2.suptitle(f"Non-linear fit of y for {fid}; thermal {ntherm}")
+    if plot:
+        # Clean up figures and add titles, then save them to the output directory
+        fig.suptitle(f"Non-linear fit of x for {fid}; thermal {ntherm}")
+        fig2.suptitle(f"Non-linear fit of y for {fid}; thermal {ntherm}")
 
-    fig.tight_layout()
-    fig2.tight_layout()
+        fig.tight_layout(rect=[0, 0, 1, 0.96])
+        fig2.tight_layout(rect=[0, 0, 1, 0.96])
 
-    # Save figs out to the output directory
-    fig.savefig(f"{outdir}/nonlinfitx_thermal_{ntherm}_fid_{fid}.png", dpi=300)
-    fig2.savefig(f"{outdir}/nonlinfity_thermal_{ntherm}_fid_{fid}.png", dpi=300)
-
-    # Create a third figure, fig3, to show the track of the thermal in the x-y plane, with the bins highlighted, and the altitude profile over time. 
-
-    fig3 = plt.figure(figsize=(9,3))
-
-    ax5 = fig3.add_subplot(121)
-    ax5.plot((x_data-x_data[0])/1e3, (y_data-y_data[0])/1e3)
-    ax5.scatter(0, 0, label = 'start', color = 'green')
-    ax5.scatter((x_data[-1]-x_data[0])/1e3, (y_data[-1]-y_data[0])/1e3, label = 'end', color = 'red')
-
-    binnum = 0
-    for s, e in bidx:
-        ax5.plot((x_data[s:e]-x_data[0])/1e3, (y_data[s:e]-y_data[0])/1e3, label = f"Bin {binnum}")
-        binnum += 1
-
-    ax5.set_xlabel("x (km)")
-    ax5.set_ylabel("y (km)")
-    # ax.set_zlabel("z (m)")
-    ax5.legend(loc="center right", bbox_to_anchor=(-0.20, 0.5))
-
-    ax6 = fig3.add_subplot(122)
-    ax6.plot(t_data-t_data[0], z_data)
-    for s, e in bidx:
-        ax6.axvline(x=(t_data[s]-t_data[0]), color='k', linestyle='--')
-        ax6.axvline(x=(t_data[e-1]-t_data[0]), color='k', linestyle='--')
-    # ax6.legend(loc="center left", bbox_to_anchor=(-0.5, 0.5))
+        # Save figs out to the output directory
+        fig.savefig(f"{outdir}/nonlinfitx_thermal_{ntherm}_fid_{fid}.png", dpi=300)
+        fig2.savefig(f"{outdir}/nonlinfity_thermal_{ntherm}_fid_{fid}.png", dpi=300)
 
 
-    fig3.subplots_adjust(left=0.3)  # make room for the legend
-    plt.xlabel("t (s)")
-    plt.ylabel("altitude (m)")
+    # Optional debug/inspection plotting
+    if plot:
+        # # Create a third figure, fig3, to show the track of the thermal in the x-y plane, with the bins highlighted, and the altitude profile over time. 
+        fig3 = plt.figure(figsize=(9,3))
 
-    plt.suptitle(f"Thermal {ntherm} track and altitude for {fid}")
-    plt.tight_layout()  
-    plt.show()
+        plot_nonlin_track_summary(fig3, fid, ntherm, bidx, t_data, x_data, y_data, z_data)
 
-    fig3.savefig(f"{outdir}/track_thermal_{ntherm}_fid_{fid}.png", dpi=600)
+        fig3.savefig(f"{outdir}/track_thermal_{ntherm}_fid_{fid}.png", dpi=600)
 
     # add back the window start index offset to retrieve indices in original data
     # this tells us the indices of the original data (with all thermal windows) that correspond to each bin.
@@ -1229,6 +1184,98 @@ def nonlinmdl(fid, t_data, x_data, y_data, z_data, lat, lon, bidx, nbin, wins, n
 
     return results
 
+
+def plot_nonlin_bin_fit(nax, fig, fig2, ntherm, i, bin_result):
+    '''
+    fig, fig2: nspection plots for each of the thermal bins created from each thermal window.
+    Plotting the x-fit and y-fit vs time and the x (x data - x model) and y residuals vs time.
+    '''
+
+    tbin = bin_result["tbin"]
+    xbin = bin_result["xbin"]
+    ybin = bin_result["ybin"]
+    teval = bin_result["teval"]
+    xevalplt = bin_result["xevalplt"]
+    yevalplt = bin_result["yevalplt"]
+    xres = bin_result["xres"]
+    yres = bin_result["yres"]
+
+    # Subplots on fig for x component fit for each bin
+    # ax = fig.add_subplot(2*nax[1], nax[0], 2*i+1)   # double the columns in order to have space for residuals plot alongside each fit  
+    ax = fig.add_subplot(nax[1], nax[0], 2*i+1)
+    ax.plot(tbin, xbin, linestyle = '', marker = '.', markersize=4)
+    # adding tbin.mean() back onto teval to display curve against the original data
+    ax.plot(teval + tbin.mean(), xevalplt, linestyle = '-', color = 'k', alpha = 0.5, label = f"Bin {ntherm}-{i+1} x fit")
+
+    ax.set_xlabel("t, s")
+    ax.set_ylabel("x, m")
+    ax.legend()
+
+    # Subplots on fig for x component residuals for each bin
+    # ax2 = fig.add_subplot(2*nax[1], nax[0], 2*i+2)   # double the columns in order to have space for residuals plot alongside each fit 
+    ax2 = fig.add_subplot(nax[1], nax[0], 2*i+2) 
+    # remember, xres = xbin - xeval
+    # len(tbin) == len(t_centred) however, len(tbin) != len(teval)
+    ax2.plot(tbin, xres, linestyle = '', marker = '.', markersize=4, label = f"Bin {ntherm}-{i+1} x residuals")
+    ax2.set_xlabel("t, s")
+    ax2.set_ylabel("x residual, m")
+    ax2.legend()
+
+    # Subplots on fig2 for y component fit for each bin
+    ax3 = fig2.add_subplot(nax[1], nax[0], 2*i+1)   # double the rows in order to have space for residuals plot below each fit  
+    ax3.plot(tbin, ybin, linestyle = '', marker = '.', markersize=4)
+    ax3.plot(teval + tbin.mean(), yevalplt, linestyle = '-', color = 'k', alpha = 0.5, label = f"Bin {ntherm}-{i+1} y fit")
+
+    ax3.set_xlabel("t, s")
+    ax3.set_ylabel("y, m")
+    ax3.legend()
+
+    # Subplots on fig2 for y component residuals for each bin
+    ax4 = fig2.add_subplot(nax[1], nax[0], 2*i+2)   # double the rows in order to have space for residuals plot below each fit  
+    ax4.plot(tbin, yres, linestyle = '', marker = '.', markersize=4, label = f"Bin {ntherm}-{i+1} y residuals")
+    ax4.set_xlabel("t, s")
+    ax4.set_ylabel("y residual, m")
+    ax4.legend()
+
+
+def plot_nonlin_track_summary(fig, fid, ntherm, bidx, t, x, y, z):
+    '''
+    fig3: Inspection plots for each of the thermal bins created from each thermal window.
+    Plotting the x vs y tracks and alitude vs t tracks for each of the bins in each thermal window.
+    '''
+    # fig = plt.figure(figsize=(9,3))
+        
+    ax5 = fig.add_subplot(121)
+    ax5.plot((x-x[0])/1e3, (y-y[0])/1e3)
+    ax5.scatter(0, 0, label = 'start', color = 'green')
+    ax5.scatter((x[-1]-x[0])/1e3, (y[-1]-y[0])/1e3, label = 'end', color = 'red')
+
+    binnum = 0
+    for s, e in bidx:
+        ax5.plot((x[s:e]-x[0])/1e3, (y[s:e]-y[0])/1e3, label = f"Bin {binnum}")
+        binnum += 1
+
+    ax5.set_xlabel("x (km)")
+    ax5.set_ylabel("y (km)")
+    # ax.set_zlabel("z (m)")
+    ax5.legend(loc="center right", bbox_to_anchor=(-0.20, 0.5))
+
+    ax6 = fig.add_subplot(122)
+    ax6.plot(t-t[0], z)
+    for s, e in bidx:
+        ax6.axvline(x=(t[s]-t[0]), color='k', linestyle='--')
+        ax6.axvline(x=(t[e-1]-t[0]), color='k', linestyle='--')
+    # ax6.legend(loc="center left", bbox_to_anchor=(-0.5, 0.5))
+
+    fig.subplots_adjust(left=0.3)  # make room for the legend
+    plt.xlabel("t (s)")
+    plt.ylabel("altitude (m)")
+
+    fig.suptitle(f"Thermal {ntherm} track and altitude for {fid}")
+    fig.tight_layout(rect=[0, 0, 1, 0.94])
+    plt.show()
+
+    # fig.savefig(f"{outdir}/track_thermal_{ntherm}_fid_{fid}.png", dpi=600)
 
 # # 7. Plot u and v components of wind estimates
 
@@ -1396,7 +1443,7 @@ def main():
 
             # Estimate global period for the current thermalling window using the omega_guess function, which analyzes the time series data to provide an initial estimate of the angular rate of rotation (omega). 
             # This is used to determine the period of oscillation for binning and fitting purposes.
-            globomega0 = omega_guess(t_data, x_data, y_data)
+            globomega0 = omega_guess(t_data, x_data, y_data, plot=False)
             globP = 2*np.pi/abs(globomega0)
             if globP > 1.5*30 or globP < 0.5*30:
                 globP = 30
@@ -1422,14 +1469,15 @@ def main():
             # Track how many bins have been processed across all thermalling windows.
             globnbin = globnbin + nbin
 
-            # Create variables to store the number of rows and columns needed for the subplots, based on how many bins are to be processed.
+            # Create variables to store the number of rows and columns needed for the subplots.
+            # Each bin gets its own row, with fit and residual side by side.
             nax = np.empty(2, dtype=int)
-            nax[0] = 2  # number of columns for subplots (fixed at 2 for fit and residuals)
-            nax[1]= -(nbin // -nax[0])  # cell division to determine number of rows needed for subplots
+            nax[0] = 2  # number of columns for subplots (fit and residual)
+            nax[1] = nbin  # one row per bin
 
             # Execute the non-linear fitting routine. Each bin is processed in turn within this function, and results are stored in the results_nln dataframe. 
             # The function also generates plots for each bin showing the fit and residuals, and saves them to the output directory.
-            results_nln = nonlinmdl(fid, t_data, x_data, y_data, z_data, lat, lon, bidx, nbin, wins, ntherm, results_nln, nax, globP)
+            results_nln = nonlinmdl(fid, t_data, x_data, y_data, z_data, lat, lon, bidx, nbin, wins, ntherm, results_nln, nax, globP, plot=False)
 
         ntherm += 1
 
