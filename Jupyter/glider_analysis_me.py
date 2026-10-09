@@ -1329,7 +1329,6 @@ def main():
     # Check the DataFrame structure and column types
     print(dfm.info())
 
-
     ####################################
     ### 2. Pre-process Flight Tracks ###
     ####################################
@@ -1477,7 +1476,7 @@ def main():
 
             # Execute the non-linear fitting routine. Each bin is processed in turn within this function, and results are stored in the results_nln dataframe. 
             # The function also generates plots for each bin showing the fit and residuals, and saves them to the output directory.
-            results_nln = nonlinmdl(fid, t_data, x_data, y_data, z_data, lat, lon, bidx, nbin, wins, ntherm, results_nln, nax, globP, plot=False)
+            results_nln = nonlinmdl(fid, t_data, x_data, y_data, z_data, lat, lon, bidx, nbin, wins, ntherm, results_nln, nax, globP, plot=True)
 
         ntherm += 1
 
