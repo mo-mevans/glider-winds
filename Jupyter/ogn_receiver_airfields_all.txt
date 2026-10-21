@@ -1,0 +1,71 @@
+ogn_receiver_name	wiki_description	latitude	longitude	location_lookup_status	receiver_state	last_active	source_url
+Balado	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+BGCHinton	Hinton-in-the-Hedges airfield	52.03	-1.211	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Bidford	Bidford Gliding Club	52.1412	-1.8455	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Booker	Wycombe Air Park	51.611	-0.808	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Brunty	Bruntingthorpe area	52.493	-1.124	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Burn	Burn Gliding Club	53.746	-1.083	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Crowland	Crowland airfield	52.709	-0.14	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+DNDSOUTH	Dundee Airport	56.452	-3.026	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Dyce	Dyce, Aberdeen	57.205	-2.192	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+EGBS	Shobdon Airfield	52.242	-2.881	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+EGDM	Boscombe Down	51.152	-1.747	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+EGHF	Lee-on-Solent	50.816	-1.206	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+EGHL	Lasham airfield	51.1874	-1.0317	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+EGKE	Challock	51.208	0.83	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+EGLP	Brimpton Airfield	51.384	-1.169	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+EGTU	Dunkeswell	50.86	-3.234	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+EGUB	RAF Benson	51.613	-1.095	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+EGUD	Abingdon Airfield	51.691	-1.316	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+EGWN	RAF Halton	51.791	-0.737	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+EGXY	RAF Syerston	53.023	-0.912	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+EGYD	RAF Cranwell	53.031	-0.483	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Enstone	Enstone	51.929	-1.429	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+HusBos	Husbands Bosworth	52.439	-1.043	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Mynd	Long Mynd	52.518	-2.88	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+NYMPS	Nympsfield	51.715	-2.282	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Oban	Oban Airport	56.463	-5.4	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Portmoak	Portmoak airfield	56.189	-3.322	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+SALTBY	Saltby Airfield	52.829	-0.714	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+SEITEST	Seighford	52.828	-2.204	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Shobdon	Shobdon	52.242	-2.881	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+SuttonBnk	Sutton Bank	54.229	-1.209	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKABO	Aboyne	57.075	-2.839	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKAST	Aston Down	51.708	-2.132	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKBIC	Bicester airfield	51.915	-1.136	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKBR1	Lec Airfield	50.801	-0.659	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKBRW	Walney Island	54.128	-3.268	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKCHP	Chipping	53.907	-2.616	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKCPH	Camphill	53.305	-1.729	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKDRL	Darlton	53.235	-0.859	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKDUN2	Dunstable	51.87	-0.552	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKEAS	Easterton	57.586	-3.31	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKEDG	Shenington	52.083	-1.472	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKFES	Feshiebridge	57.1019	-3.8931	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKGRL2	Gransden Lodge	52.179	-0.112	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKFAL	Falgunzeon	54.998	-3.774	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKHAD	Halesland	51.227	-2.719	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKKEE	Keevil	51.313	-2.108	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKLLE	Lleweni Parc	53.209	-3.39	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKLTN	North of London Luton Airport	51.89	-0.368	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKmil	Milfield	55.588	-2.087	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKmil2	Milfield	55.588	-2.087	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKNHL	North Hill	50.853	-3.267	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKPAR	Parham Airfield	50.925	-0.473	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKPAR2	Parham Airfield	50.925	-0.473	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKPCS	Portmoak Airfield	56.189	-3.322	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKPOC	Pocklington	53.931	-0.794	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKPRK	The Park	51.127	-2.174	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKRAT	Rattlesden	52.167	0.872	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKRIN	Ringmer	50.913	0.056	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKRIW	Ridgewell	52.042	0.559	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKRUF	Rufforth	53.951	-1.183	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKSE2	Seighford	52.828	-2.204	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKTAL	Talgarth	51.981	-3.204	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKTIB	Tibenham	52.457	1.164	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKWRM	Wormingford	51.943	0.802	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKUPW	Upwood	52.429	-0.145	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKUSK	Usk area	51.722	-2.85	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKWOG	Weston-on-the-Green	51.881	-1.221	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Upavon	Upavon	51.286	-1.783	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+WingFarm	Longbridge Deverill	51.154	-2.179	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk

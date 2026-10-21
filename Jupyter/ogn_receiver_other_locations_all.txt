@@ -1,0 +1,123 @@
+ogn_receiver_name	wiki_description	latitude	longitude	location_lookup_status	receiver_state	last_active	source_url
+Alconbury	Little Stukeley	52.3645	-0.2263	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Aldersht2	Aldershot	51.248	-0.768	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Arnold	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Aurora	Fulstow	53.441	0.005	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Aylesbury	Aylesbury	51.8168	-0.8124	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Balerno	Balerno	55.884	-3.339	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Barton	Barton, Oxford	51.771	-1.224	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Bellinghm	Bellingham	55.145	-2.254	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+EGDD	Bicester area	51.915	-1.136	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Blunham	Blunham	52.147	-0.321	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Bosham	Bosham	50.831	-0.853	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Burnley	Burnley	53.789	-2.248	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+BURSTALL	Burstall	52.052	1.056	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Bury	Bury	53.593	-2.297	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Cowfold	Cowfold	50.989	-0.272	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+COLNE	Colne Valley	53.646	-1.824	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+CalneW	Calne	51.439	-2.005	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Calne	Calne	51.439	-2.005	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Cambridge	Cambridge	52.2053	0.1218	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Chilboltn	Chilbolton	51.1593	-1.4364	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Chelt	Cheltenham	51.9	-2.078	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+PWChelt	Cheltenham	51.9	-2.078	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Chirnside	Chirnside	55.802	-2.208	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Codford	Codford	51.155	-2.026	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Cwmbran	Cwmbran	51.653	-3.021	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+DarltonN	Rampton	53.2975	-0.8022	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+DAWLY	Dawlish	50.581	-3.466	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Dereham	Dereham	52.681	-0.94	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Didcot	Didcot	51.608	-1.245	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Edinburgh	North Edinburgh	55.969	-3.168	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+EGBKE	Wellingborough	52.303	-0.694	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Elsworth	Elsworth	52.254	-0.074	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Fordham	Fordham	52.312	0.39	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+FourMarks	Four Marks	51.106	-1.049	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Gilwern	Gilwern	51.824	-3.093	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Glamis	Glamis	56.608	-3.003	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Gransden	Great Gransden	52.184	-0.143	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Hadfold	Adversane	50.999	-0.482	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Hawick	Hawick	55.423	-2.787	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Hewish	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Heyshott	Heyshott	50.956	-0.72	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Hullav	Hullavington	51.529	-2.142	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Hurst	Hurstpierpoint	50.933	-0.181	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+KingsLynn	King's Lynn	52.754	-0.397	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Kingstone	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Littleton	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Llanwrda	Llanwrda	51.969	-3.874	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Lvnheath	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Madeley	Madeley, Telford	52.638	-2.45	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Midlem	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Mira	Nuneaton	52.523	-1.469	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Morecambe	Morecambe	54.074	-2.864	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Nhampton	Northampton	52.24	-0.902	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Newcastle	Newcastle upon Tyne	54.978	-1.617	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Orwell	Orwell	52.135	-0.012	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Oxford	Garsington	51.716	-1.161	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Penally	Penally	51.659	-4.723	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Peninver	Peninver	55.485	-5.492	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Quorn	Quorn	52.744	-1.171	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Rannoch	Kinloch Rannoch	56.701	-4.189	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+ReadingW	Reading	51.454	-0.978	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+RhiwFaw	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+PWRhiwFaw	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Riponhill	Ripon	54.136	-1.524	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Saxondale	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Shefford	Shefford	52.039	-0.335	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Southwick	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+StNeotsLF	St Neots	52.228	-0.265	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Stoke	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Swaffham	Swaffham	52.648	-0.685	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Thame	Thame	51.748	-0.976	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Thornbury	Thornbury	51.608	-2.526	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Totternho	Totternhoe	51.885	-0.573	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+TRING	Tring	51.795	-0.66	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Troston	Troston	52.309	0.746	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKABZ	Aberdeen	57.17	-2.15	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKBDY	Metheringham	53.14	-0.405	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKBER	Berwick-upon-Tweed	55.771	-2.005	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKBSN	Basingstoke North	51.282	-1.087	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKCHL	Cheltenham	51.9	-2.078	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKCME	Cheltenham East	51.9	-2.078	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKCRI	Crianlarich	56.39	-4.618	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKGAM	Gamlingay	52.155	-0.193	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKGRF	Great Ashfield	52.248	0.915	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKHUN	Hungerford	51.414	-1.516	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+ukinv	Inverurie	57.284	-2.374	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKKTH	Keith	57.543	-2.951	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKLSW	Lincoln SW	53.215	-0.6	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKMAC	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKMAM	Malmesbury	51.585	-2.099	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKMARW02	Marlborough	51.421	-1.73	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKMBU	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKMOO	Muir of Ord	57.519	-4.46	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKMUD	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKMTR	Montrose	56.712	-2.466	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKNWLD	North Weald	51.722	0.154	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+NewburyS	Burghclere	51.349	-1.322	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKOAK	Oakley, Bedford	52.168	-0.525	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UkOln	Olney	52.153	-0.702	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKOUN	Oundle	52.48	-0.468	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKPET	Peterborough	52.573	-0.25	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKPLY	Loch Tummel	56.706	-4.007	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKREASW	Burghfield Common	51.399	-1.047	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKSHS	Shrewsbury	52.708	-2.754	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKSTD	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKSTI	Stirling south	56.105	-3.936	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKSTN	St Neots	52.228	-0.265	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKTEW	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UKYTT02	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+UPTON	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+WestGrin	West Grinstead	50.976	-0.326	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Whittnghm	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Wokingham	Wokingham	51.41	-0.834	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Woodbury	8 km southeast of Exeter, Devon			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Worcester	Worcester	52.193	-2.221	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Hawkinge	Hawkinge	51.112	1.161	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+LOCHLMND	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+EdinbuW	Location not sufficiently specified for a defensible approximation			NOT FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+Shiren	Chepstow area	51.64	-2.676	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+TMPDYM	Dymock	51.978	-2.482	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+BROMSGROV	Bromsgrove	52.335	-2.059	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk
+HEADLEY	Headley near Lasham	51.119	-1.004	FOUND	Not assessed		https://wiki.glidernet.org/list-of-receivers-uk

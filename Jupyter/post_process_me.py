@@ -27,10 +27,12 @@ import cartopy.feature as cfeature
 import cdsapi   # for downloading ERA5 reanalysis data
 import matplotlib.pyplot as plt
 import numpy as np
+import math
 import os
 import pandas as pd
 from sklearn.cluster import DBSCAN  # DBSCAN - Density-Based Spatial Clustering of Applications with Noise
 import xarray as xr     # working with netCDF files
+from datetime import timedelta
 
 
 # # 0.2 Global Constants and Configuration
@@ -38,13 +40,14 @@ import xarray as xr     # working with netCDF files
 # Global Constants
 
 # Set lat and long of radiosonde launch site (in this case it was Albemarle, UK)
-LAT_SONDE = 55.019
-LON_SONDE = -1.878
+LAT_SONDE = 50.89
+LON_SONDE = 0.32
 
 # Set Timestamp of radiosonde launch
-TIMESTAMP_SONDE = pd.Timestamp('2026-03-22 23:15:00')
+TIMESTAMP_SONDE = pd.Timestamp('2026-09-25 23:15:00')
 # Derive decimal time of radiosonde launch from timestamp
 TIME_SONDE = int(TIMESTAMP_SONDE.hour) + (int(TIMESTAMP_SONDE.minute) / 60)
+
 
 
 # # 1. Load in fitting results and radiosonde data
@@ -52,15 +55,25 @@ TIME_SONDE = int(TIMESTAMP_SONDE.hour) + (int(TIMESTAMP_SONDE.minute) / 60)
 # Glider File Configuration
 
 gliderroot = "./"
-gliderfile = "nonlinfit_results_FLRDDE434.csv"
+gliderfile = "nonlinfit_results_FLRD029BF.csv"
 gliderpath = gliderroot + gliderfile
 print(f"file id: {gliderfile}")
 
 # Radiosonde File Configuration
 
 sonderoot = "./"
-sondefile = "2026032223-03238.csv" # radiosonde sample selected for 22-03-26 at 23:15 Z at Albemarle, UK
+sondeymd = TIMESTAMP_SONDE.strftime('%Y%m%d')
+sondehr = str(TIMESTAMP_SONDE.hour)
+# radiosonde sample selected for 22-03-26 at 23:15 Z at Albemarle, UK
+sondefile = f"{sondeymd+sondehr}-03882.csv"
 sondepath = sonderoot + sondefile
+
+# ERA5 Configuration
+
+# defined as edges with (N, W, S, E)
+# e.g. for Albemarle ish loc: (57.0, -4.0, 55.0, -1.0)
+era5_bbox = (52.0, -2.0, 50.0, 1.0)
+
 
 
 
@@ -964,6 +977,43 @@ def plot_sonde_comparison_abs(results_df):
 
 # # 5. Quantitative comparison between glider measurements and ERA5
 
+
+def calculate_era5_times(timestamp):
+    '''
+    Return year, month and day strings for the timestamp and following day.
+    '''
+    nextday = timestamp + timedelta(days=1)
+
+    return {
+        'current_day': {
+            'year': timestamp.strftime('%Y'),
+            'month': timestamp.strftime('%m'),
+            'day': timestamp.strftime('%d'),
+        },
+        'next_day': {
+            'year': nextday.strftime('%Y'),
+            'month': nextday.strftime('%m'),
+            'day': nextday.strftime('%d'),
+        },
+    }
+
+
+def calculate_era5_bbox(df_glider, sonde_lat, sonde_lon,
+    lat_col='lat0', lon_col='lon0', padding=1):
+    '''
+    Dynamically creating the lat/lon ERA5 bounding box.
+
+    Return padded, truncated ERA5 bounds in (North, West, South, East) order.
+    '''
+    # Extend the glider and radiosonde bounds by one degree, then truncate.
+    north = int(max(df_glider[lat_col].max(), sonde_lat) + padding)
+    south = int(min(df_glider[lat_col].min(), sonde_lat) - padding)
+    west = int(min(df_glider[lon_col].min(), sonde_lon) - padding)
+    east = int(max(df_glider[lon_col].max(), sonde_lon) + padding)
+
+    return (north, west, south, east)
+
+
 def retrieve_era5_winds(client, year, month, day, times, area, pressure_levels, output_path):
     '''
     Download ERA5 u/v wind components at given pressure levels for a single date, saving to NetCDF.
@@ -996,6 +1046,7 @@ def retrieve_era5_winds(client, year, month, day, times, area, pressure_levels, 
         }, output_path)
 
         return None
+
 
 def load_nc(filepath):
     '''
@@ -1346,8 +1397,10 @@ def main():
 
     # Read in estimated parameters from the processed thermal bins from .csv file, straight into a pandas dataframe.
     df_glider = load_data(gliderpath)
-    print(f"Estimated parameters obtained from glider data analysis for 22-03-2026 at 15:45 Z:")
+    print(f"Estimated parameters obtained from glider data analysis:")
     print(df_glider)
+
+
 
     # Read in radiosonde data, sourced from the University of Wyoming radiosonde archive (http://weather.uwyo.edu/upperair/sounding.html). 
     # The data is in .csv format, and contains the following columns:
@@ -1355,6 +1408,10 @@ def main():
     df_rawsonde = load_data(sondepath)
     print(f"Albemarle (Raw) Radiosonde data for 22-03-2026 at 23:15 Z:")
     print(df_rawsonde)
+    print(df_rawsonde.columns)
+
+    print(df_rawsonde['wind direction_degree'])
+
 
     # Filter sonde data for < 2000 m - this range is useful for glider flying altitudes
     df_sonde = preprocess_sonde(df_rawsonde)
@@ -1460,9 +1517,9 @@ def main():
     print(df_sonde)
 
     # calculate residuals between glider and sonde winds at nearest height match
-    sonde_residuals = compare_to_radiosonde(df_glider_clean[df_glider_clean['subcluster'] == '0c'], df_sonde,
+    sonde_residuals = compare_to_radiosonde(df_glider_clean[df_glider_clean['subcluster'] == '0b'], df_sonde,
                                         sonde_lat=LAT_SONDE, sonde_lon=LON_SONDE,
-                                        sonde_time=TIME_SONDE)  # 23:15 in decimal hours
+                                        sonde_time=TIME_SONDE) # 23:15 in decimal hours
     print(sonde_residuals)
 
     # plot absolute residuals of u and v winds against time separation and horizontal distance from radiosonde
@@ -1489,31 +1546,58 @@ def main():
     # ERA5 pressure levels of interest (hPa)
     pressure_levels = ['800', '825', '850', '875', '900', '925', '950', '975', '1000']
 
+    # ERA5 times of interest - derived from the glider time range
+    era5_times = pd.to_datetime(df_glider['time'], format='ISO8601', utc=True)
+    time_hours = [(str(t)+':00') for t in range(era5_times.dt.hour.min(), 24)]
+
+    print(time_hours)
+
+    # ERA5 lat/lon Region of interest
+    era5_bbox = calculate_era5_bbox(
+        df_glider,
+        sonde_lat=LAT_SONDE,
+        sonde_lon=LON_SONDE,
+        padding=1,
+    )
+
+    # ERA5 dates of interest
+    era5_dates = calculate_era5_times(TIMESTAMP_SONDE)
+
+    current_day = era5_dates['current_day']
+    next_day = era5_dates['next_day']
+
+
+    era5_dates = calculate_era5_times(TIMESTAMP_SONDE)
+
+    current_day = era5_dates['current_day']
+    next_day = era5_dates['next_day']
+
+
     # Two example retrievals of ERA5 reanalysis data for wind components at various pressure levels.
     # Uncomment and modify as needed to retrieve data.
     # The file will be saved in the current working directory.
-    retrieve_era5_winds(c, year='2026', month='03', day='22',
-                        times=['14:00', '15:00', '16:00', '17:00', '18:00',
-                            '19:00', '20:00', '21:00', '22:00', '23:00'],
-                        area=(57.0, -4.0, 55.0, -1.0),
+    retrieve_era5_winds(c, year=current_day['year'], month=current_day['month'], day=current_day['day'],
+                        times=time_hours,
+                        area=era5_bbox,
                         pressure_levels=pressure_levels,
-                        output_path='era5_test_22mar.nc')
+                        output_path=f'era5_{current_day['year']+current_day['month']+current_day['day']}.nc')
 
-    retrieve_era5_winds(c, year='2026', month='03', day='23',
+    retrieve_era5_winds(c, year=next_day['year'], month=next_day['month'], day=next_day['day'],
                         times=['00:00'],
-                        area=(57.0, -4.0, 55.0, -1.0),
+                        area=era5_bbox,
                         pressure_levels=pressure_levels,
-                        output_path='era5_winds_23mar_00.nc')
+                        output_path=f'era5_{next_day['year']+next_day['month']+next_day['day']}_00.nc')
 
-
+    
     # Read in ERA5 wind profile .nc file(s), straight into a xarray DataArray(s).
-    ds_22 = load_nc('era5_winds_22mar.nc')
-    ds_23 = load_nc('era5_winds_23mar_00.nc')
+    ds_day = load_nc(f'era5_test_{era5_day+era5_mon+era5_day}.nc')
+    ds_nextday = load_nc(f'era5_winds_{era5_year_nextday+era5_mon_nextday+era5_day_nextday}_00.nc')
     # Combine the two xarrays into a single dataset for interpolation.
-    ds = xr.concat([ds_22, ds_23], dim='valid_time').sortby('valid_time')
+    ds = xr.concat([ds_day, ds_nextday], dim='valid_time').sortby('valid_time')
     print(f"Downloaded ERA5 DataArray co-ordinates:\n {ds.coords}")
     print(f"Downloaded ERA5 DataArray u-wind dimensions:\n {ds['u'].dims}")
 
+    exit()
 
     #########################################################
     ### 6. Comparison of Glider Measurements Against ERA5 ###

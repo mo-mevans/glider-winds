@@ -44,8 +44,8 @@ MIN_DURATION = 60
 
 # Configuration
 
-gliderroot = "../Sample Data/OGN_sample_2/"
-gliderfile = "flarm_aprs_FLRDDE434.parquet"
+gliderroot = "./"
+gliderfile = "flarm_aprs_FLRD029BF.parquet"
 
 # # globbing all the glider flight files and storing the file names in a list
 # # leave commented out for now - will be needed when dealing with several glider flights
@@ -1442,7 +1442,7 @@ def main():
 
             # Estimate global period for the current thermalling window using the omega_guess function, which analyzes the time series data to provide an initial estimate of the angular rate of rotation (omega). 
             # This is used to determine the period of oscillation for binning and fitting purposes.
-            globomega0 = omega_guess(t_data, x_data, y_data, plot=False)
+            globomega0 = omega_guess(t_data, x_data, y_data, plot=True)
             globP = 2*np.pi/abs(globomega0)
             if globP > 1.5*30 or globP < 0.5*30:
                 globP = 30
