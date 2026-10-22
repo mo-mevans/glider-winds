@@ -44,8 +44,9 @@ MIN_DURATION = 60
 
 # Configuration
 
-gliderroot = "./"
-gliderfile = "flarm_aprs_FLRD029BF.parquet"
+gliderroot = "./glider_files/"
+# gliderfile = "flarm_aprs_FLRD029BF.parquet"
+gliderfile = "flarm_aprs_FLRD029C7.parquet"
 
 # # globbing all the glider flight files and storing the file names in a list
 # # leave commented out for now - will be needed when dealing with several glider flights

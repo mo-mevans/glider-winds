@@ -1,4 +1,3 @@
-# %%
 # name: post_process
 # date: 27/07/2026
 # author: Toby Alexander
@@ -39,12 +38,29 @@ from datetime import timedelta
 
 # Global Constants
 
-# Set lat and long of radiosonde launch site (in this case it was Albemarle, UK)
-LAT_SONDE = 50.89
-LON_SONDE = 0.32
+# Create a dictionary of sonde launch sites with station number, lat and lon
+# Dicionary of UK radiosondes with [station_no, lat, lon] values
+radiosondes_uk = {
+    "Camborne": ["03808", 50.218, -5.326],
+    "Herstmonceux": ["03882", 50.891, 0.317],
+    "Watnall": ["03554", 53.006, -1.250],
+    "Albemarle": ["03238", 55.019, -1.878],
+    "Castorbay": ["03918", 54.501, -6.339],
+    "Larkhill": ["03743", 51.202, -1.806],
+    "Lerwick": ["03005", 60.139, -1.185]
+}
+
+# Set lat and long of radiosonde launch site
+UK_SONDE = "Herstmonceux"   # CHNAGE THIS for the UK sonde site of interest
+STATION_SONDE = radiosondes_uk[UK_SONDE][0]
+LAT_SONDE = radiosondes_uk[UK_SONDE][1]
+LON_SONDE = radiosondes_uk[UK_SONDE][2]
+
 
 # Set Timestamp of radiosonde launch
-TIMESTAMP_SONDE = pd.Timestamp('2026-09-25 23:15:00')
+TIMESTAMP_SONDE = pd.Timestamp('2026-09-25 23:15:00') # CHANGE THIS for the UK sonde launch time of interest
+# TIMESTAMP_SONDE = pd.Timestamp('2026-09-26 00:00:00')
+
 # Derive decimal time of radiosonde launch from timestamp
 TIME_SONDE = int(TIMESTAMP_SONDE.hour) + (int(TIMESTAMP_SONDE.minute) / 60)
 
@@ -53,28 +69,21 @@ TIME_SONDE = int(TIMESTAMP_SONDE.hour) + (int(TIMESTAMP_SONDE.minute) / 60)
 # # 1. Load in fitting results and radiosonde data
 
 # Glider File Configuration
-
 gliderroot = "./"
-gliderfile = "nonlinfit_results_FLRD029BF.csv"
+gliderfile = "nonlinfit_results_FLRD029BF.csv" # CHANGE THIS for the glider file of interest
 gliderpath = gliderroot + gliderfile
 print(f"file id: {gliderfile}")
 
-# Radiosonde File Configuration
 
+# Radiosonde File Configuration
 sonderoot = "./"
 sondeymd = TIMESTAMP_SONDE.strftime('%Y%m%d')
-sondehr = str(TIMESTAMP_SONDE.hour)
-# radiosonde sample selected for 22-03-26 at 23:15 Z at Albemarle, UK
-sondefile = f"{sondeymd+sondehr}-03882.csv"
+sondehr = TIMESTAMP_SONDE.strftime('%H')
+
+
+# radiosonde sample selected
+sondefile = f"{sondeymd+sondehr}-{STATION_SONDE}.csv"
 sondepath = sonderoot + sondefile
-
-# ERA5 Configuration
-
-# defined as edges with (N, W, S, E)
-# e.g. for Albemarle ish loc: (57.0, -4.0, 55.0, -1.0)
-era5_bbox = (52.0, -2.0, 50.0, 1.0)
-
-
 
 
 def load_data(filepath):
@@ -665,8 +674,8 @@ def plot_cluster_temporal_coverage(df, cluster_id=0, alt_col='zhat',
 def subcluster_by_time(df, cluster_id, breaks, cluster_col='cluster'):
     '''
     Split a cluster into time-based sub-clusters using manual time breaks.
-    breaks: list of hour values defining the boundaries e.g. [12.5, 15.0]
-    Example: cluster_id=0, breaks=[12.5, 15.0]
+    breaks: list of hour values defining the boundaries e.g. [12.5, 16.0]
+    Example: cluster_id=0, breaks=[12.5, 16.0]
     '''
     # Ensure the 'timestamp_hr' column exists
     if 'timestamp_hr' not in df.columns:
@@ -976,7 +985,6 @@ def plot_sonde_comparison_abs(results_df):
 
 
 # # 5. Quantitative comparison between glider measurements and ERA5
-
 
 def calculate_era5_times(timestamp):
     '''
@@ -1400,18 +1408,16 @@ def main():
     print(f"Estimated parameters obtained from glider data analysis:")
     print(df_glider)
 
-
-
     # Read in radiosonde data, sourced from the University of Wyoming radiosonde archive (http://weather.uwyo.edu/upperair/sounding.html). 
     # The data is in .csv format, and contains the following columns:
     # [time, longitude, latitude, pressure_hPa, geopotential height_m, temperature_C, dew point temperature_C, ice point temperature_C, relative humidity_%, humidity wrt ice_%, mixing ratio_g/kg, wind direction_degree, wind speed_m/s]
     df_rawsonde = load_data(sondepath)
-    print(f"Albemarle (Raw) Radiosonde data for 22-03-2026 at 23:15 Z:")
+    print(f"(Raw) Radiosonde data for {sondeymd} at {sondehr} Z:")
     print(df_rawsonde)
     print(df_rawsonde.columns)
 
-    print(df_rawsonde['wind direction_degree'])
 
+    print(df_rawsonde['time'])
 
     # Filter sonde data for < 2000 m - this range is useful for glider flying altitudes
     df_sonde = preprocess_sonde(df_rawsonde)
@@ -1467,11 +1473,24 @@ def main():
     ## cluster glider wind measurements by spatial proximity using DBSCAN
     df_glider_clean = cluster_measurements(df_glider_clean, eps_km=20, min_samples=4)
     print(df_glider_clean)
+    
+    print(df_glider_clean['cluster'])
+
+    # checking that a valid cluster of gliders exists, if not exit the script
+    if not (df_glider_clean['cluster'] >= 0).any():
+        print(
+            "WARNING: No valid clusters were found."
+            "All measurements were classified as noise. Stopping processing."
+        )
+        return
+
+
     # check counts
     print(f"**********")
     for cluster_id, cluster_size in df_glider_clean.groupby('cluster').size().items():
         print(f"Cluster {cluster_id}: {cluster_size} points")
     print(f"**********")
+
 
     ## cluster plots ##
     # plot spatial and temporal glider wind measurements and radiosonde launch
@@ -1490,7 +1509,7 @@ def main():
 
     # Split a cluster into time-based sub-clusters using manual time breaks.
     df_glider_clean['timestamp_hr'] = df_glider_clean['timestamp'] % (3600*24) / 3600
-    df_glider_clean = subcluster_by_time(df_glider_clean, cluster_id=cluster_no, breaks=[12.5, 15.0])
+    df_glider_clean = subcluster_by_time(df_glider_clean, cluster_id=cluster_no, breaks=[12.5, 16.0])
     # check counts
     print(f"**********")
     for cluster_id, cluster_size in df_glider_clean.groupby('subcluster').size().items():
@@ -1499,10 +1518,12 @@ def main():
 
     print(df_glider_clean.info())
 
+
     ## subclusters wind profile plots ##
     # plot glider wind profiles for subclusters within a specific cluster e.g. 0
     plot_wind_profiles(df_glider_clean[df_glider_clean['cluster'] == cluster_no], df_sonde,
                     cluster_col='subcluster')
+
 
 
     ###############################################################
@@ -1511,13 +1532,14 @@ def main():
     print(f"************************************************")
     print(f"*** Compare Glider Winds to Radiosonde Winds ***")
     print(f"************************************************")
-
+    # define a subcluster number to investigate (used for later plots)
+    subcluster_no = '0b'
 
     df_sonde = derive_sonde_wind_components(df_sonde)
     print(df_sonde)
 
     # calculate residuals between glider and sonde winds at nearest height match
-    sonde_residuals = compare_to_radiosonde(df_glider_clean[df_glider_clean['subcluster'] == '0b'], df_sonde,
+    sonde_residuals = compare_to_radiosonde(df_glider_clean[df_glider_clean['subcluster'] == subcluster_no], df_sonde,
                                         sonde_lat=LAT_SONDE, sonde_lon=LON_SONDE,
                                         sonde_time=TIME_SONDE) # 23:15 in decimal hours
     print(sonde_residuals)
@@ -1550,7 +1572,6 @@ def main():
     era5_times = pd.to_datetime(df_glider['time'], format='ISO8601', utc=True)
     time_hours = [(str(t)+':00') for t in range(era5_times.dt.hour.min(), 24)]
 
-    print(time_hours)
 
     # ERA5 lat/lon Region of interest
     era5_bbox = calculate_era5_bbox(
@@ -1567,37 +1588,38 @@ def main():
     next_day = era5_dates['next_day']
 
 
-    era5_dates = calculate_era5_times(TIMESTAMP_SONDE)
-
-    current_day = era5_dates['current_day']
-    next_day = era5_dates['next_day']
-
-
     # Two example retrievals of ERA5 reanalysis data for wind components at various pressure levels.
     # Uncomment and modify as needed to retrieve data.
     # The file will be saved in the current working directory.
-    retrieve_era5_winds(c, year=current_day['year'], month=current_day['month'], day=current_day['day'],
-                        times=time_hours,
-                        area=era5_bbox,
-                        pressure_levels=pressure_levels,
-                        output_path=f'era5_{current_day['year']+current_day['month']+current_day['day']}.nc')
+    if os.path.exists(f'era5_winds_{current_day['year']+current_day['month']+current_day['day']}.nc'):
+        print(f"era5_{current_day['year']+current_day['month']+current_day['day']}.nc already exists, skipping ERA5 retrieval.")
+    else:
+        retrieve_era5_winds(c, year=current_day['year'], month=current_day['month'], day=current_day['day'],
+                            times=time_hours,
+                            area=era5_bbox,
+                            pressure_levels=pressure_levels,
+                            output_path=f'era5_winds_{current_day['year']+current_day['month']+current_day['day']}.nc')
 
-    retrieve_era5_winds(c, year=next_day['year'], month=next_day['month'], day=next_day['day'],
-                        times=['00:00'],
-                        area=era5_bbox,
-                        pressure_levels=pressure_levels,
-                        output_path=f'era5_{next_day['year']+next_day['month']+next_day['day']}_00.nc')
+
+    if os.path.exists(f'era5_winds_{next_day['year']+next_day['month']+next_day['day']}_00.nc'):
+        print(f"era5_{next_day['year']+next_day['month']+next_day['day']}_00.nc already exists, skipping ERA5 retrieval.")
+    else:
+        retrieve_era5_winds(c, year=next_day['year'], month=next_day['month'], day=next_day['day'],
+                            times=['00:00'],
+                            area=era5_bbox,
+                            pressure_levels=pressure_levels,
+                            output_path=f'era5_winds_{next_day['year']+next_day['month']+next_day['day']}_00.nc')
 
     
     # Read in ERA5 wind profile .nc file(s), straight into a xarray DataArray(s).
-    ds_day = load_nc(f'era5_test_{era5_day+era5_mon+era5_day}.nc')
-    ds_nextday = load_nc(f'era5_winds_{era5_year_nextday+era5_mon_nextday+era5_day_nextday}_00.nc')
+    ds_day = load_nc(f'era5_winds_{current_day['year']+current_day['month']+current_day['day']}.nc')
+    ds_nextday = load_nc(f'era5_winds_{next_day['year']+next_day['month']+next_day['day']}_00.nc')
     # Combine the two xarrays into a single dataset for interpolation.
     ds = xr.concat([ds_day, ds_nextday], dim='valid_time').sortby('valid_time')
     print(f"Downloaded ERA5 DataArray co-ordinates:\n {ds.coords}")
     print(f"Downloaded ERA5 DataArray u-wind dimensions:\n {ds['u'].dims}")
 
-    exit()
+
 
     #########################################################
     ### 6. Comparison of Glider Measurements Against ERA5 ###
@@ -1620,7 +1642,7 @@ def main():
 
     # plot ERA5 residuals against physical variables: glider altitude and u, v wind speeds
     plot_era5_residuals(glider_era5_residuals)
-    # plot glider altitude vs ERA5 signed residuals 
+    # plot glider altitude vs ERA5 signed residuals
     plot_era5_bias_vs_alt(glider_era5_residuals)
 
 
@@ -1671,3 +1693,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# %%
