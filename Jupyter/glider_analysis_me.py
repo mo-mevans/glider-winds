@@ -44,9 +44,11 @@ MIN_DURATION = 60
 
 # Configuration
 
+gliderroot = "../Sample Data/OGN_sample_2/"
 gliderroot = "./glider_files/"
 # gliderfile = "flarm_aprs_FLRD029BF.parquet"
-gliderfile = "flarm_aprs_FLRD029C7.parquet"
+gliderfile = "flarm_aprs_FLRD02904.parquet"
+# gliderfile = "flarm_aprs_FLRDDE434.parquet"
 
 # # globbing all the glider flight files and storing the file names in a list
 # # leave commented out for now - will be needed when dealing with several glider flights
@@ -289,7 +291,7 @@ def angular_rate(t, b, win_smooth=9, polyorder=2):
     # unwrap then compute derivative db/dt -> angular rate (rad/s)
     # unwrap to avoid discontinuities of phase at 2pi
     bn = np.unwrap(b)
-    # optional smoothing to reduce GPS noise; window length must be odd and <= len(b)
+    # optional smoothing to reduce GPS noise; window length must be odd and < len(b)
     if win_smooth is not None and win_smooth >= 3 and win_smooth % 2 == 1 and win_smooth < len(bn):
         bn_s = savgol_filter(bn, win_smooth, polyorder)
     else:
@@ -328,7 +330,7 @@ def detect_circling_windows(t, x, y, alt_m,
     """
 
 
-    # requires minimum number of samples to run
+    # # requires minimum number of samples to run
     if len(t) < 3:
         return []
 
@@ -337,7 +339,16 @@ def detect_circling_windows(t, x, y, alt_m,
     angrate = angular_rate(t, b, win_smooth)
     dzdt = w_comp(t, alt_m)
 
-    # boolean mask where ang_rate and dzdt exceeds thresholds. True where thermal circling is detected (i.e., angular rate exceeds threshold and vertical speed is positive)
+    # INVESTIGATE ANGRATES - WHY ARE angrate < 0.02 BEING WINDOWED???
+    print(f"Angrates:\n {angrate[91:97]}")
+
+    # print(f"Angrates:\n {angrate[608:612]}")
+
+    # print(f"Angrates:\n {angrate[0:179]}")
+    print(f"{len(angrate)}")
+
+    # boolean mask where ang_rate and dzdt exceeds thresholds.
+    # True where thermal circling is detected (i.e., angular rate exceeds threshold and vertical speed is positive)
     mask = (np.abs(angrate) >= ang_rate_thresh) & (dzdt > 0)  # only consider circling when climbing (positive vertical speed)
 
     # Find contiguous True windows
@@ -393,8 +404,9 @@ def detect_circling_windows(t, x, y, alt_m,
 
 
 
-def plt_therm_res(t, x, y, alt_m, windows, ang_rate_thresh=0.02):
-    # Plot the glider trajectories and angular rate, for each thermal window.
+def plt_therm_res(t, x, y, alt_m, windows, ang_rate_thresh=0.02,
+                  win_smooth=9):
+    # Plot the glider trajectories, angular rate and rate of change of altitude for each thermal window.
 
     # Plot 3D path
     fig = plt.figure(figsize=(8,6))
@@ -422,7 +434,16 @@ def plt_therm_res(t, x, y, alt_m, windows, ang_rate_thresh=0.02):
     fig2 = plt.figure(figsize=(6,4))
     ax2 = fig2.add_subplot(111)
     b = bearings(x,y)
-    angrate = angular_rate(t,b,win_smooth=9)
+    angrate = angular_rate(t,b,win_smooth=win_smooth)
+
+    # Inspect angrates here
+    print(f"Angrates in plotting:\n {angrate[91:97]}")
+
+    # print(f"Angrates in plotting:\n {angrate[0:179]}")
+    print(f"{len(angrate)}")
+    for s, e in windows:
+        print(s, e)
+
     ax2.scatter(t, angrate, s=5, label='angular rate (rad/s)')
     for s,e in windows:
         ax2.axvspan(t[s], t[e], color='orange', alpha=0.3)
@@ -433,25 +454,43 @@ def plt_therm_res(t, x, y, alt_m, windows, ang_rate_thresh=0.02):
     ax2.set_ylim([-1, 1])
     ax2.legend()
     plt.tight_layout()
+
+    # additional diagnostic plot to show the rate of change of altitude vs time
+    fig3 = plt.figure(figsize=(6,4))
+    ax3 = fig3.add_subplot(111)
+    dzdt = w_comp(t, alt_m)
+
+    ax3.scatter(t, dzdt, s=5, label='dz/dt (m/s)')
+    for s,e in windows:
+        ax3.axvspan(t[s], t[e], color='orange', alpha=0.3)
+    ax3.axhline(0, color='k', linestyle='--')
+    ax3.set_xlabel('time (s)')
+    ax3.set_ylabel('rate of change of altitude (m/s)')
+    # ax3.set_ylim([-1, 1])
+    ax3.legend()
+    plt.tight_layout()
     plt.show()
 
-    fig3 = plt.figure(figsize=(8,6))
-    ax3 = fig3.add_subplot(111)
-    ax3.plot(x, y, linestyle = '', marker = '.', markersize=0.5)
-    ax3.plot(x[0], y[0], linestyle = '', marker = '+', markersize=10, color = 'g', label = 'start')
-    ax3.plot(x[-1], y[-1], linestyle = '', marker = 'x', markersize=10, color = 'r', label = 'end')  
+
+    fig4 = plt.figure(figsize=(8,6))
+    ax4 = fig4.add_subplot(111)
+    ax4.plot(x, y, linestyle = '', marker = '.', markersize=0.5)
+    ax4.plot(x[0], y[0], linestyle = '', marker = '+', markersize=10, color = 'g', label = 'start')
+    ax4.plot(x[-1], y[-1], linestyle = '', marker = 'x', markersize=10, color = 'r', label = 'end')  
 
     tidx = 0
     for s,e in windows:
-        ax3.plot(x[s:e+1], y[s:e+1], marker = '.', markersize=0.5, label=f"thermal {tidx}")
+        ax4.plot(x[s:e+1], y[s:e+1], marker = '.', markersize=0.5, label=f"thermal {tidx}")
         tidx += 1
 
-    ax3.set_xlabel('x (m)')
-    ax3.set_ylabel('y (m)')
-    # ax3.legend()
-    # ax3.legend(loc="center left", bbox_to_anchor=(1.1, 0.5))
-    # fig3.subplots_adjust(right=0.3)  # make room for the legend
+    ax4.set_xlabel('x (m)')
+    ax4.set_ylabel('y (m)')
+    # ax4.legend()
+    # ax4.legend(loc="center left", bbox_to_anchor=(1.1, 0.5))
+    # fig4.subplots_adjust(right=0.3)  # make room for the legend
     plt.tight_layout()
+
+
 
 
 def plt_window_height_gained(alt_m, windows):
@@ -644,6 +683,7 @@ def bin2(t_data, nz_data, sbin, P, Ptrim):
         print(f"Therefore, cannot define a valid bin.")
         return [], 0
 
+
     # Check if the window duration is less than the minimum required time for one full bin (i.e. < 2 periods)
     if (t_data[-1] - t_data[0]) < (nP * P):
         print(f"Skipping binning: window is less than {nP} periods: {t_data[-1] - t_data[0]} < {nP * P}")
@@ -657,7 +697,8 @@ def bin2(t_data, nz_data, sbin, P, Ptrim):
 
     # nbin = int((t_data[-1]-t_data[0])/(nP*P)) 
     # should nbins be based on t_data_trim rather than t_data ? Yes.
-    nbin = int((t_data_trim[-1]-t_data_trim[0])/(nP*P)) # how many full bins can be made based on the number of periods in the thermal soaring data window. Each bin will contain np=2 full periods of circling.
+    # how many full bins can be made based on the number of periods in the thermal soaring data window. Each bin will contain np=2 full periods of circling.
+    nbin = int((t_data_trim[-1]-t_data_trim[0])/(nP*P))
     print(f"nbins: {nbin}")
     bidx = []
 
@@ -1356,12 +1397,14 @@ def main():
     print(f"*** Identify Thermal Soaring Windows ***")
     print(f"****************************************")
 
+    win_smooth = None
+
     # Identify thermal soaring windows, as ``(start_idx, end_idx)`` positions, within the glider flight
     windows = detect_circling_windows(t, x, y, alt_m,
                                         ang_rate_thresh=0.02,
                                         min_duration=3.0,
                                         gap_merge=20.0,
-                                        win_smooth=None)
+                                        win_smooth=win_smooth)
     
     print(f"Number of detected windows: {len(windows)}")
     print("Detected windows (start_idx, end_idx):", windows)
@@ -1373,11 +1416,15 @@ def main():
     # Apply a savgol filter to smooth the x and y data: only used for visualisation.
     sgx, sgy = smooth_track(x, y)
 
-    # Plotting thermal soaring events trajectories and angular rates
-    plt_therm_res(t, sgx, sgy, alt_m, windows, ang_rate_thresh=0.02)
+    # Plotting thermal soaring events trajectories, angular rates and rate of change of altitude
+    # Adjusted to include the 'win_smooth' parameter - currently uses the same as window detection
+    # win_smooth was set to 9 (before 23/10/26)
+    plt_therm_res(t, x, y, alt_m, windows, ang_rate_thresh=0.02,
+                  win_smooth=win_smooth)
     # Plotting height gained per thermal soaring window event
     plt_window_height_gained(alt_m, windows)
         
+
 
     ##################################################
     ### 4. Inspect Detected Thermal Soaring Events ###
@@ -1463,6 +1510,7 @@ def main():
             # Guard against short time windows or time windows that do not exceed 2 periods (see bin2() for deets)
             if nbin <= 0:
                 print(f"Skipping window {ntherm}")
+                ntherm += 1
                 continue
 
 
