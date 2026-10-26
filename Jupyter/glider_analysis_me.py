@@ -44,10 +44,10 @@ MIN_DURATION = 60
 
 # Configuration
 
-gliderroot = "../Sample Data/OGN_sample_2/"
+# gliderroot = "../Sample Data/OGN_sample_2/"
 gliderroot = "./glider_files/"
 # gliderfile = "flarm_aprs_FLRD029BF.parquet"
-gliderfile = "flarm_aprs_FLRD02904.parquet"
+gliderfile = "flarm_aprs_FLRD029BF.parquet"
 # gliderfile = "flarm_aprs_FLRDDE434.parquet"
 
 # # globbing all the glider flight files and storing the file names in a list
@@ -339,13 +339,6 @@ def detect_circling_windows(t, x, y, alt_m,
     angrate = angular_rate(t, b, win_smooth)
     dzdt = w_comp(t, alt_m)
 
-    # INVESTIGATE ANGRATES - WHY ARE angrate < 0.02 BEING WINDOWED???
-    print(f"Angrates:\n {angrate[91:97]}")
-
-    # print(f"Angrates:\n {angrate[608:612]}")
-
-    # print(f"Angrates:\n {angrate[0:179]}")
-    print(f"{len(angrate)}")
 
     # boolean mask where ang_rate and dzdt exceeds thresholds.
     # True where thermal circling is detected (i.e., angular rate exceeds threshold and vertical speed is positive)
@@ -667,7 +660,7 @@ def bin2(t_data, nz_data, sbin, P, Ptrim):
     :param numpy.ndarray (floats) nz_data: Vertical height data in meters normalised to start 0
     :param float sbin: Bin size in metres (not used)
     :param float P: Estimated period of circling
-    :param float Ptrim: Number of periods to trim from the start of the data to avoid initial transients
+    :param float Ptrim: Number of periods to trim from the start of the data to avoid initial transients.
         This is important since the initial part of the circling may not be representative of the steady-start circling behaviour.
 
     :return bidx, nbin: ``bidx`` is a list of tuples containing the bin edges
@@ -683,7 +676,6 @@ def bin2(t_data, nz_data, sbin, P, Ptrim):
         print(f"Therefore, cannot define a valid bin.")
         return [], 0
 
-
     # Check if the window duration is less than the minimum required time for one full bin (i.e. < 2 periods)
     if (t_data[-1] - t_data[0]) < (nP * P):
         print(f"Skipping binning: window is less than {nP} periods: {t_data[-1] - t_data[0]} < {nP * P}")
@@ -695,10 +687,26 @@ def bin2(t_data, nz_data, sbin, P, Ptrim):
     t_data_trim = t_data[trim_idx:] - t_data[trim_idx]   # trim the data down and normalize time to start at 0 for better numerical stability
     nz_data_trim = nz_data[trim_idx:]
 
+    # Check if there is a short trimmed time window
+    if len(t_data_trim) < 3:
+        # print(f"Skipping binning: window is too short to define a valid bin after trimming for one {nP}-period bin.")
+        print(f"Skipping binning: only {len(t_data_trim)} samples remain after trimming; at least 3 are required.")
+        print(f"Therefore, cannot define a valid bin.")
+        return [], 0
+
+    # Check if the trimmed window duration is less than two periods
+    trimmed_duration = t_data_trim[-1] - t_data_trim[0]
+    if trimmed_duration < nP * P:
+        print(f"Skipping binning: window is less than {nP} periods after trimming for one {nP}-period bin.")
+        print(f"Therefore, cannot define a valid bin.")
+        return [], 0
+
     # nbin = int((t_data[-1]-t_data[0])/(nP*P)) 
     # should nbins be based on t_data_trim rather than t_data ? Yes.
     # how many full bins can be made based on the number of periods in the thermal soaring data window. Each bin will contain np=2 full periods of circling.
-    nbin = int((t_data_trim[-1]-t_data_trim[0])/(nP*P))
+
+
+    nbin = int(trimmed_duration/(nP*P))
     print(f"nbins: {nbin}")
     bidx = []
 
@@ -1423,7 +1431,9 @@ def main():
                   win_smooth=win_smooth)
     # Plotting height gained per thermal soaring window event
     plt_window_height_gained(alt_m, windows)
-        
+    
+
+    exit()
 
 
     ##################################################
@@ -1525,7 +1535,7 @@ def main():
 
             # Execute the non-linear fitting routine. Each bin is processed in turn within this function, and results are stored in the results_nln dataframe. 
             # The function also generates plots for each bin showing the fit and residuals, and saves them to the output directory.
-            results_nln = nonlinmdl(fid, t_data, x_data, y_data, z_data, lat, lon, bidx, nbin, wins, ntherm, results_nln, nax, globP, plot=True)
+            results_nln = nonlinmdl(fid, t_data, x_data, y_data, z_data, lat, lon, bidx, nbin, wins, ntherm, results_nln, nax, globP, plot=False)
 
         ntherm += 1
 
