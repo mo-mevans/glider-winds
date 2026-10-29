@@ -437,12 +437,14 @@ def plt_therm_res(t, x, y, alt_m, windows, ang_rate_thresh=0.02,
     for s, e in windows:
         print(s, e)
 
-    ax2.scatter(t, angrate, s=5, label='angular rate (rad/s)')
+    # ax2.scatter(t, angrate, s=5, label='angular rate (rad/s)') # Unix-epoch time
+    ax2.scatter(t - t[0], angrate, s=5, label='angular rate (rad/s)') # since elapsed flight time
     for s,e in windows:
-        ax2.axvspan(t[s], t[e], color='orange', alpha=0.3)
+        # ax2.axvspan(t[s], t[e], color='orange', alpha=0.3)
+        ax2.axvspan(t[s] - t[0], t[e] - t[0], color='orange', alpha=0.3)
     ax2.axhline(ang_rate_thresh, color='k', linestyle='--')
     ax2.axhline(-ang_rate_thresh, color='k', linestyle='--')
-    ax2.set_xlabel('time (s)')
+    ax2.set_xlabel('flight time (s)')
     ax2.set_ylabel('angular rate (rad/s)')
     ax2.set_ylim([-1, 1])
     ax2.legend()
@@ -453,11 +455,13 @@ def plt_therm_res(t, x, y, alt_m, windows, ang_rate_thresh=0.02,
     ax3 = fig3.add_subplot(111)
     dzdt = w_comp(t, alt_m)
 
-    ax3.scatter(t, dzdt, s=5, label='dz/dt (m/s)')
+    # ax3.scatter(t, dzdt, s=5, label='dz/dt (m/s)') # Unix-epoch time
+    ax3.scatter(t - t[0], dzdt, s=5, label='dz/dt (m/s)') # since elapsed flight time
     for s,e in windows:
-        ax3.axvspan(t[s], t[e], color='orange', alpha=0.3)
+        # ax3.axvspan(t[s], t[e], color='orange', alpha=0.3)
+        ax3.axvspan(t[s] - t[0], t[e] - t[0], color='orange', alpha=0.3)
     ax3.axhline(0, color='k', linestyle='--')
-    ax3.set_xlabel('time (s)')
+    ax3.set_xlabel('flight time (s)')
     ax3.set_ylabel('rate of change of altitude (m/s)')
     # ax3.set_ylim([-1, 1])
     ax3.legend()
