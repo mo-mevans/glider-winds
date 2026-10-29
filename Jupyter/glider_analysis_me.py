@@ -468,25 +468,40 @@ def plt_therm_res(t, x, y, alt_m, windows, ang_rate_thresh=0.02,
     plt.tight_layout()
     plt.show()
 
+    print(f"Number of thermal soaring windows: {len(windows)}")
 
-    fig4 = plt.figure(figsize=(8,6))
+    # additional diagnostic plot to highlight the thermal soaring events over the altitude profile
+    fig4 = plt.figure(figsize = (6, 4))
     ax4 = fig4.add_subplot(111)
-    ax4.plot(x, y, linestyle = '', marker = '.', markersize=0.5, color = 'grey')
-    ax4.plot(x[0], y[0], linestyle = '', marker = '+', markersize=10, color = 'g', label = 'start')
-    ax4.plot(x[-1], y[-1], linestyle = '', marker = 'x', markersize=10, color = 'r', label = 'end')  
+    plt.scatter(t - t[0], alt_m, s=1, alpha=0.5, label='altitude')
+    for s,e in windows:
+        # ax3.axvspan(t[s], t[e], color='orange', alpha=0.3)
+        ax4.axvspan(t[s] - t[0], t[e] - t[0], color='orange', alpha=0.3)
+    ax4.set_xlabel('flight time (s)')
+    ax4.set_ylabel('altitude (m)')
+    ax4.legend()
+    plt.tight_layout()
+    plt.show()
+
+
+    fig5 = plt.figure(figsize=(8,6))
+    ax5 = fig5.add_subplot(111)
+    ax5.plot(x, y, linestyle = '', marker = '.', markersize=0.5, color = 'grey')
+    ax5.plot(x[0], y[0], linestyle = '', marker = '+', markersize=10, color = 'g', label = 'start')
+    ax5.plot(x[-1], y[-1], linestyle = '', marker = 'x', markersize=10, color = 'r', label = 'end')  
 
     tidx = 0
     for s,e in windows:
-        ax4.plot(x[s:e+1], y[s:e+1], marker = '.', markersize=0.5, label=f"thermal {tidx}")
+        ax5.plot(x[s:e+1], y[s:e+1], marker = '.', markersize=0.5, label=f"thermal {tidx}")
         tidx += 1
 
-    ax4.set_xlabel('x (m)')
-    ax4.set_ylabel('y (m)')
-    # ax4.legend()
-    # ax4.legend(loc="center left", bbox_to_anchor=(1.1, 0.5))
-    # fig4.subplots_adjust(right=0.3)  # make room for the legend
+    ax5.set_xlabel('x (m)')
+    ax5.set_ylabel('y (m)')
+    ax5.legend()
+    # ax5.legend(loc="center left", bbox_to_anchor=(1.1, 0.5))
+    # fig5.subplots_adjust(right=0.3)  # make room for the legend
     plt.tight_layout()
-
+    plt.show()
 
 
 

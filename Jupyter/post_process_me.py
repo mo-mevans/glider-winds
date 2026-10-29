@@ -1209,6 +1209,7 @@ def plot_era5_residuals(results_df):
 # New function added to plot the u, v wind profiles from the glider and ERA5 data - 29/10/26
 def plot_glider_vs_era5_alt(results_df):
     '''Plot glider and (interpolated) ERA5 u, v wind profiles at each glider altitude..'''
+
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 8), sharey=True)
     fig.suptitle('Glider and ERA5 u, v winds vs altitude')
 
