@@ -523,7 +523,7 @@ def main():
         'ogn_receiver_other_locations_active.parquet'
     )
     # Visualise the distribution of glider messages over the UK for the filtered data, coloured by time of day.
-    # plot_messages(gliders_uk_df, ogn_airfields=ogn_airfields, ogn_other_locations=ogn_other_locations)
+    plot_messages(gliders_uk_df, ogn_airfields=ogn_airfields, ogn_other_locations=ogn_other_locations)
 
 
 
@@ -552,6 +552,7 @@ def main():
 
     # create a loop to loop through all the most active gliders and output these to .parquet files
     keyidx_no = 0
+    # storing the data from the most active glider into a pandas DataFrame
     g1df = select_glider(message_counts, unq_f, keyidx=keyidx_no)
 
 
@@ -562,8 +563,8 @@ def main():
             select_glider(message_counts, unq_f, keyidx=keyidx_no, return_df=False)
             keyidx_no += 1
 
-
-    print(f"Selected glider dataframe for {message_counts[keyidx_no][0]}:\n {g1df}")
+    keyidx_sel = 0
+    print(f"Selected glider dataframe for {message_counts[keyidx_sel][0]}:\n {g1df}")
 
 
 
@@ -576,7 +577,7 @@ def main():
 
     # Examine the flight path by looking at altitude vs time, and longitude vs latitude. 
     # A sawtooth pattern in altitude is a strong indicator of thermal soaring, as the glider climbs in a thermal and then glides down to the next thermal, and so on.
-    plot_flight_path(message_counts, g1df, keyidx=keyidx_no)
+    plot_flight_path(message_counts, g1df, keyidx=keyidx_sel)
 
     # Visualise the selected glider track over the UK for the filtered data, coloured by time of day.
     plot_messages(
@@ -591,8 +592,3 @@ if __name__ == '__main__':
 
 
 exit()
-
-
-
-
-

@@ -467,7 +467,7 @@ def plt_therm_res(t, x, y, alt_m, windows, ang_rate_thresh=0.02,
 
     fig4 = plt.figure(figsize=(8,6))
     ax4 = fig4.add_subplot(111)
-    ax4.plot(x, y, linestyle = '', marker = '.', markersize=0.5)
+    ax4.plot(x, y, linestyle = '', marker = '.', markersize=0.5, color = 'grey')
     ax4.plot(x[0], y[0], linestyle = '', marker = '+', markersize=10, color = 'g', label = 'start')
     ax4.plot(x[-1], y[-1], linestyle = '', marker = 'x', markersize=10, color = 'r', label = 'end')  
 
@@ -1327,6 +1327,7 @@ def plot_nonlin_track_summary(fig, fid, ntherm, bidx, t, x, y, z):
 
     # fig.savefig(f"{outdir}/track_thermal_{ntherm}_fid_{fid}.png", dpi=600)
 
+
 # # 7. Plot u and v components of wind estimates
 
 def plot_uv_winds(df_main, windows):
@@ -1432,9 +1433,7 @@ def main():
     # Plotting height gained per thermal soaring window event
     plt_window_height_gained(alt_m, windows)
     
-
     exit()
-
 
     ##################################################
     ### 4. Inspect Detected Thermal Soaring Events ###

@@ -1205,6 +1205,50 @@ def plot_era5_residuals(results_df):
     plt.show()
 
 
+
+# New function added to plot the u, v wind profiles from the glider and ERA5 data - 29/10/26
+def plot_glider_vs_era5_alt(results_df):
+    '''Plot glider and (interpolated) ERA5 u, v wind profiles at each glider altitude..'''
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 8), sharey=True)
+    fig.suptitle('Glider and ERA5 u, v winds vs altitude')
+
+    # mark ERA5 pressure level altitudes
+    era5_alts = results_df['era5_alt'].unique()
+
+    for ax, col, label, color in [
+        (ax1, 'u_glider', 'u (m/s)', 'steelblue'),
+        (ax1, 'u_era5', 'u (m/s)', 'darkorange'),
+        (ax2, 'v_glider', 'v (m/s)', 'steelblue'),
+        (ax2, 'v_era5', 'v (m/s)', 'darkorange')
+    ]:
+        ax.scatter(results_df[col], results_df['alt'],
+                   label=col, alpha=0.6, color=color, s=20)
+        # ax.axvline(0, color='k', linewidth=0.5)
+
+        # mark ERA5 level altitudes
+        for era5_alt in sorted(era5_alts):
+            ax.axhline(era5_alt, color='grey', linewidth=0.8,
+                       linestyle='--', alpha=0.5)
+            ax.text(ax.get_xlim()[0] if ax.get_xlim()[0] != 0 else -5,
+                    era5_alt + 10, f'{era5_alt:.0f}m',
+                    fontsize=8, color='grey')
+
+        # # mean residual per ERA5 level
+        # for era5_alt in sorted(era5_alts):
+        #     mask = results_df['era5_alt'] == era5_alt
+        #     mean_resid = results_df.loc[mask, col].mean()
+        #     ax.plot(mean_resid, era5_alt, 'r*', markersize=12,
+        #             label='Mean per (ERA5) level' if era5_alt == sorted(era5_alts)[0] else '')
+
+        ax.set_xlabel(label)
+        ax.set_ylabel('Altitude (m)')
+        ax.grid(True, alpha=0.3)
+        ax.legend()
+
+    fig.tight_layout()
+    plt.show()
+
+
 def plot_era5_bias_vs_alt(results_df):
     '''Plot signed residuals vs altitude to show systematic bias at each ERA5 level.'''
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 8), sharey=True)
@@ -1243,6 +1287,8 @@ def plot_era5_bias_vs_alt(results_df):
 
     fig.tight_layout()
     plt.show()
+
+
 
 
 
@@ -1525,7 +1571,6 @@ def main():
                     cluster_col='subcluster')
 
 
-
     ###############################################################
     ### 4. Comparison of Glider Measurements Against Radiosonde ###
     ###############################################################
@@ -1642,8 +1687,16 @@ def main():
 
     # plot ERA5 residuals against physical variables: glider altitude and u, v wind speeds
     plot_era5_residuals(glider_era5_residuals)
+
+    # plot glider vs (interpolated) ERA5 u,v wind profiles
+    plot_glider_vs_era5_alt(glider_era5_residuals)
+
     # plot glider altitude vs ERA5 signed residuals
     plot_era5_bias_vs_alt(glider_era5_residuals)
+
+    print(f"Glider ERA5 residuals:\n")
+    print(glider_era5_residuals)
+
 
 
     #############################################################
@@ -1693,5 +1746,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# %%
