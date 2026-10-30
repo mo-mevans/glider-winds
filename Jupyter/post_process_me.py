@@ -1104,8 +1104,8 @@ def compare_glider_era5(df_glider, ds, alt_levels=None,
 
     :return: DataFrame containing glider and matched ERA5 altitudes, their altitude
         difference, u/v wind component residuals (glider minus ERA5), u/v wind residuals
-        normalized by the glider wind uncertainties (z-scores) and glider and ERA5 u/v
-        wind components.
+        normalized by the glider wind uncertainties (z-scores), glider and ERA5 u/v
+        wind components along with the ERA5 U-wind magnitudes and directions.
     :rtype: pandas.DataFrame
     '''
 
@@ -1138,6 +1138,8 @@ def compare_glider_era5(df_glider, ds, alt_levels=None,
 
         u_era5 = float(era5_point['u'].values)
         v_era5 = float(era5_point['v'].values)
+        magU_era5 = np.sqrt(u_era5**2 + v_era5**2)
+        dir_era5  = (270 - np.rad2deg(np.arctan2(v_era5, u_era5))) % 360
 
         du = row[u_col] - u_era5
         dv = row[v_col] - v_era5
@@ -1156,6 +1158,8 @@ def compare_glider_era5(df_glider, ds, alt_levels=None,
             'v_era5':       v_era5,
             'u_glider':     row[u_col],
             'v_glider':     row[v_col],
+            'magU_era5':    magU_era5,
+            'dir_era5':     dir_era5
         })
 
     print(f"Retained {len(results)}/{len(df_glider)} measurements within {max_alt_diff}m of an ERA5 level")
@@ -1203,7 +1207,6 @@ def plot_era5_residuals(results_df):
 
     fig.tight_layout()
     plt.show()
-
 
 
 # New function added to plot the u, v wind profiles from the glider and ERA5 data - 29/10/26
@@ -1288,6 +1291,70 @@ def plot_era5_bias_vs_alt(results_df):
 
     fig.tight_layout()
     plt.show()
+
+
+# New function added to plot the glider and ERA5 wind speed and direction profiles - 30/10/26
+def plot_glider_era5_profiles(df, df_era5, alt_col='zhat', speed_col='magU', dir_col='bUdeg',
+                       speed_err_col='magU_combined', dir_err_col='dbUdeg_combined',
+                       cluster_col='cluster', alt_era5='alt', speed_era5='magU_era5',
+                       dir_era5='dir_era5'):
+    '''
+    Plot wind speed and direction profiles for each cluster of measurements, including error bars and comparison with ERA5 data.
+    '''
+    clusters = sorted([c for c in df[cluster_col].unique() if c != -1])
+    
+    for cluster_id in clusters:
+        cluster_df = df[df[cluster_col] == cluster_id].copy()
+
+        plt.rcParams.update({
+        'font.size': 14,          # default for everything
+        'axes.titlesize': 14,     # subplot titles
+        'axes.labelsize': 14,     # x and y labels
+        'xtick.labelsize': 14,    # tick labels
+        'ytick.labelsize': 14,
+        'legend.fontsize': 14,
+        })
+
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 8), sharey=True)
+        fig.suptitle(f'Wind profile — Cluster {cluster_id} (n={len(cluster_df)})')
+        
+        # wind speed
+        glider_speed_handle = ax1.errorbar(cluster_df[speed_col], cluster_df[alt_col],
+                    xerr=cluster_df[speed_err_col],
+                    fmt='s', markersize=6, capsize=3, linewidth=2,
+                    color='steelblue', ecolor='k',
+                    alpha=0.8, label='Glider')
+        era5_speed_handle, = ax1.plot(df_era5[speed_era5], df_era5[alt_era5],
+                    marker='D', markersize=6, linestyle='',
+                    label='ERA5', color='darkorange')
+        ax1.set_xlabel('Wind speed (m/s)')
+        ax1.set_ylabel('Altitude (m)')
+        ax1.set_title('Wind speed')
+        ax1.grid(True, alpha=0.3)
+        ax1.set_xlim(left=0)
+        ax1.legend(handles=[glider_speed_handle, era5_speed_handle],
+               labels=['Glider', 'ERA5'])
+
+        # wind direction
+        glider_direction_handle = ax2.errorbar(cluster_df[dir_col], cluster_df[alt_col],
+                    xerr=cluster_df[dir_err_col],
+                    fmt='s', markersize=6, capsize=3, linewidth=2,
+                    color='steelblue', ecolor='k',
+                    alpha=0.8, label='Glider')
+        era5_direction_handle, = ax2.plot(df_era5[dir_era5], df_era5[alt_era5],
+                    marker='d', markersize=6, linestyle='',
+                    label='ERA5', color='darkorange')
+        ax2.set_xlabel('Wind direction (degrees)')
+        ax2.set_title('Wind direction')
+        ax2.grid(True, alpha=0.3)
+        ax2.set_xlim(0, 360)
+        ax2.set_xticks([0, 90, 180, 270, 360])
+        ax2.set_xticklabels(['N', 'E', 'S', 'W', 'N'])
+        ax2.legend(handles=[glider_direction_handle, era5_direction_handle],
+               labels=['Glider', 'ERA5'])
+
+        fig.tight_layout()
+        plt.show()
 
 
 
@@ -1688,16 +1755,12 @@ def main():
 
     # plot ERA5 residuals against physical variables: glider altitude and u, v wind speeds
     plot_era5_residuals(glider_era5_residuals)
-
     # plot glider vs (interpolated) ERA5 u,v wind profiles
     plot_glider_vs_era5_alt(glider_era5_residuals)
-
-    # plot glider altitude vs ERA5 signed residuals
+    # plot glider altitude vs ERA5 signed u,v wind residuals
     plot_era5_bias_vs_alt(glider_era5_residuals)
-
-    print(f"Glider ERA5 residuals:\n")
-    print(glider_era5_residuals)
-
+    # plot ERA5 wind speeds and directions compared against the glider wind speed and direction profiles
+    plot_glider_era5_profiles(df_glider_clean, glider_era5_residuals)
 
 
     #############################################################
