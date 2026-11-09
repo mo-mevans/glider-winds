@@ -1357,9 +1357,6 @@ def plot_glider_era5_profiles(df, df_era5, alt_col='zhat', speed_col='magU', dir
         plt.show()
 
 
-
-
-
 def compare_sonde_era5(df_sonde, ds, alt_levels=None,
                         sonde_lat=LAT_SONDE, sonde_lon=LON_SONDE,
                         sonde_time=TIMESTAMP_SONDE):

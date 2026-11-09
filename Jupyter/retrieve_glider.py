@@ -392,7 +392,7 @@ def group_glider_messages(df):
     return list(zip(keys, nmes)), unq_f
 
 
-def select_glider(message_counts, unq_f, keyidx=0,
+def export_glider(message_counts, unq_f, keyidx=0,
     output_dir='glider_files', return_df=True):
     '''
     Select and output data from a single glider to a .parquet file using keyidx.
@@ -408,7 +408,7 @@ def select_glider(message_counts, unq_f, keyidx=0,
     :param: str output_dir: Directory in which to save the glider parquet file.
         Created if it does not exist.
     :param: bool return_df, optional: If True, return the selected glider's DataFrame.
-        The parquet file is saved regardless of this setting.
+        The parquet file is saved regardless of this setting unless it already exists.
     
     :return: The selected glider's DataFrame if return_df is True, otherwise None.
     :rtype: pandas.DataFrame or None
@@ -424,12 +424,17 @@ def select_glider(message_counts, unq_f, keyidx=0,
     g1df = g1df.sort_values('timestamp')
     g1df = g1df.reset_index(drop=True)
 
+
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Save out the flight track for this glider to a Parquet file for later analysis.
     filename = output_dir / f"flarm_aprs_{gkey}.parquet"
-    g1df.to_parquet(filename, index=False)
+    if filename.exists():
+        print(f"Skipping existing file: {filename}")
+    else:
+        print(f"Retrieving Glider {gkey} as it has >1000 messages.")
+        g1df.to_parquet(filename, index=False)
+
 
     if return_df:
         return g1df
@@ -471,8 +476,8 @@ def main():
     print(f"start: {start_time}")
     print(f"end: {end_time}")
 
-
     frames = []
+    # globbing all parquet files in directory
     for f in filenames:
         f = root + f
 
@@ -480,18 +485,6 @@ def main():
         frames.append(df)
 
     df3 = pd.concat(frames, ignore_index=True)
-
-
-
-    # # trial code for globbing all parquet files in a directory
-    # all_frames = []
-    # for f in glider_file_names:
-    #     df = pd.read_parquet(f)
-
-    #     all_frames.append(df)
-
-    # df_final = pd.concat(all_frames, ignore_index=True)
-    # print(df_final)
 
     print(df3)
 
@@ -514,7 +507,6 @@ def main():
     gliders_uk_df = filter_loc_time(gliders_df, start_time, end_time)
 
 
-
     # UK OGN Receiver Locations
     ogn_airfields = load_ogn_receiver_locations(
     'ogn_receiver_airfields_active.parquet'
@@ -524,7 +516,6 @@ def main():
     )
     # Visualise the distribution of glider messages over the UK for the filtered data, coloured by time of day.
     plot_messages(gliders_uk_df, ogn_airfields=ogn_airfields, ogn_other_locations=ogn_other_locations)
-
 
 
     # saving filtered glider data to parquet file and 
@@ -546,26 +537,18 @@ def main():
 
     message_counts, unq_f = group_glider_messages(gliders_uk_df)
 
-
     print(f"message_counts:\n {message_counts}")
     print(f"unq_f:\n {unq_f.keys()}")
 
     # create a loop to loop through all the most active gliders and output these to .parquet files
     keyidx_no = 0
-    # storing the data from the most active glider into a pandas DataFrame
-    g1df = select_glider(message_counts, unq_f, keyidx=keyidx_no)
-
-
     print(f"Retrieving Gliders with >1000 messages:")
     for i, j in message_counts:   
         if j > 1000:
-            print(f"Retrieving Glider {i} as it has >1000 messages.")
-            select_glider(message_counts, unq_f, keyidx=keyidx_no, return_df=False)
+            print("+++++++++")
+            # print(f"Retrieving Glider {i} as it has >1000 messages.")
+            export_glider(message_counts, unq_f, keyidx=keyidx_no, return_df=False)
             keyidx_no += 1
-
-    keyidx_sel = 0
-    print(f"Selected glider dataframe for {message_counts[keyidx_sel][0]}:\n {g1df}")
-
 
 
     ##############################################
@@ -574,6 +557,12 @@ def main():
     print("*******************")
     print("Examine Flight Path")
     print("*******************")
+
+    # Storing the data from the most active glider into a pandas DataFrame
+    keyidx_sel = 0
+    g1df = export_glider(message_counts, unq_f, keyidx=keyidx_sel)
+
+    print(f"Selected glider dataframe for {message_counts[keyidx_sel][0]}:\n {g1df}")
 
     # Examine the flight path by looking at altitude vs time, and longitude vs latitude. 
     # A sawtooth pattern in altitude is a strong indicator of thermal soaring, as the glider climbs in a thermal and then glides down to the next thermal, and so on.
@@ -589,6 +578,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-exit()

@@ -1452,7 +1452,6 @@ def main():
     # Plotting height gained per thermal soaring window event
     plt_window_height_gained(alt_m, windows)
     
-    exit()
 
     ##################################################
     ### 4. Inspect Detected Thermal Soaring Events ###
